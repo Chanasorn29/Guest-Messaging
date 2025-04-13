@@ -3,28 +3,33 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;  // ใช้ process.env.PORT เพื่อให้รองรับการ deploy
-const messageFile = path.join(__dirname, 'messages.json');  // ไฟล์ที่เก็บข้อความ
+const PORT = process.env.PORT || 3000;
+const messageFile = path.join(__dirname, 'messages.json');
 
-app.use(express.json());  // middleware สำหรับการรับข้อมูลแบบ JSON
-app.use(express.static('public'));  // ให้บริการไฟล์ในโฟลเดอร์ public
+// เสิร์ฟไฟล์ static จากโฟลเดอร์ public
+app.use(express.static('public'));
+app.use(express.json());
 
-// เส้นทางสำหรับรับข้อความ
+// เสิร์ฟไฟล์ index.html เมื่อเข้าเว็บ
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// API สำหรับรับข้อความ
 app.post('/api/message', (req, res) => {
-  const { message } = req.body;  // รับข้อความจาก body
+  const { message } = req.body;
 
   if (!message || !message.trim()) {
-    return res.status(400).json({ status: 'ข้อความว่าง' });  // ถ้าข้อความว่างให้ส่งข้อผิดพลาด
+    return res.status(400).json({ status: 'ข้อความว่าง' });
   }
 
   const newEntry = {
     message,
-    time: new Date().toISOString()  // เก็บเวลาที่ข้อความถูกส่ง
+    time: new Date().toISOString()
   };
 
   let messages = [];
   if (fs.existsSync(messageFile)) {
-    // ถ้ามีไฟล์ messages.json ให้ทำการอ่านข้อมูล
     try {
       messages = JSON.parse(fs.readFileSync(messageFile));
     } catch (error) {
@@ -33,10 +38,9 @@ app.post('/api/message', (req, res) => {
     }
   }
 
-  messages.push(newEntry);  // เพิ่มข้อความใหม่เข้าไป
-  
+  messages.push(newEntry);
+
   try {
-    // เขียนข้อมูลกลับไปยังไฟล์ JSON
     fs.writeFileSync(messageFile, JSON.stringify(messages, null, 2));
     res.json({ status: 'ส่งข้อความสำเร็จแล้ว!' });
   } catch (error) {
@@ -45,7 +49,6 @@ app.post('/api/message', (req, res) => {
   }
 });
 
-// เริ่มต้น server
 app.listen(PORT, () => {
   console.log(`🚀 Server is running at http://localhost:${PORT}`);
 });
