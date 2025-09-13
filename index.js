@@ -8,6 +8,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static("public"));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
+});
+
+app.get('/messages', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'public', 'messages.html'));
+});
 
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => {
@@ -39,10 +46,6 @@ app.post('/message', async (req, res) => {
   } catch(err) {
       res.status(400).json({ message: err.message });
   }
-});
-
-app.get('/messages.html', (req, res) => {
-  res.sendFile(path.join(process.cwd(), 'public', 'messages.html'));
 });
 
 app.get('/message', async (req, res) => {
