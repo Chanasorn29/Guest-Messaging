@@ -38,11 +38,20 @@ const Product = mongoose.model('Product', productSchema);
 // สร้าง message ใหม่
 app.post('/products', async (req, res) => {
   try {
-    const newProduct = new Product(req.body);
-    const savedProduct = await newProduct.save();
-    res.status(201).json(savedProduct);   // แก้เครื่องหมาย comma
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+      const newProduct = new Product(req.body);
+      const savedProduct = await newProduct.save();
+      res.status(201).json(savedProduct);
+  } catch(err) {
+      res.status(400).json({ message: err.message });
+  }
+});
+
+app.get('/products', async (req, res) => {
+  try {
+      const products = await Product.find();
+      res.json(products);
+  } catch(err) {
+      res.status(700).json({ message: err.message });
   }
 });
 
@@ -50,7 +59,6 @@ app.post('/products', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
 
 
 
