@@ -110,30 +110,37 @@
 
   <script>
     async function sendMessage() {
-      const msg = document.getElementById('message').value;
-
-      if (!msg.trim()) {
-        alert('พิมพ์ข้อความก่อนนะครับ!');
+      const msg = document.getElementById('message').value.trim();
+      if (!msg) {
+        alert('กรุณาพิมพ์ข้อความ!');
         return;
       }
 
-      const res = await fetch('/api/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg })
-      });
-
-      const result = await res.json();
-      const responseElement = document.getElementById('responseText');
-      if (result.status === "ข้อความสำเร็จ") {
-        responseElement.className = 'response success';
-      } else {
-        responseElement.className = 'response error';
+      try {
+        const res = await fetch("http://localhost:3000/message", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+        const data = await res.json();
+        document.getElementById('response').innerText = data.status;
+      } catch (err) {
+        document.getElementById('response').innerText = "เกิดข้อผิดพลาด";
       }
-      responseElement.innerText = result.status;
 
-      document.getElementById('message').value = '';
+      document.getElementById('message').value = "";
     }
+      // const result = await res.json();
+      // const responseElement = document.getElementById('responseText');
+      // if (result.status === "ข้อความสำเร็จ") {
+      //   responseElement.className = 'response success';
+      // } else {
+      //   responseElement.className = 'response error';
+      // }
+      // responseElement.innerText = result.status;
+
+      // document.getElementById('message').value = '';
+    
   </script>
 </body>
 </html>

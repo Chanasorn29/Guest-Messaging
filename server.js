@@ -1,17 +1,14 @@
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-
 // const fs = require('fs');
 // const path = require('path');
-
+// const messageFile = path.join(__dirname, 'messages.json');
 const app = express();
 const PORT = process.env.PORT || 3000;
-// const messageFile = path.join(__dirname, 'messages.json');
-
 app.use(express.json());
+app.use(express.static("public"));
 
-// เชื่อม MongoDB
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => {
   console.log('MongoDB Ready!!');
@@ -20,8 +17,7 @@ mongoose.connect(process.env.MONGODB_URI)
   console.error('MongoDB Error', err);
 });
 
-// สร้าง Schema
-const productSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
   message: {
     type: String,
     required: true
@@ -32,30 +28,27 @@ const productSchema = new mongoose.Schema({
   }
 });
 
-// สร้าง Model
-const Product = mongoose.model('Product', productSchema);
+const message = mongoose.model('message', messageSchema);
 
-// สร้าง message ใหม่
-app.post('/products', async (req, res) => {
+app.post('/message', async (req, res) => {
   try {
-      const newProduct = new Product(req.body);
-      const savedProduct = await newProduct.save();
-      res.status(201).json(savedProduct);
+      const newMessage = new message(req.body);
+      const savedMessage = await newMessage.save();
+      res.status(201).json(savedMessage);
   } catch(err) {
-      res.status(400).json({ message: err.message });
+      res.status(100).json({ message: err.message });
   }
 });
 
-app.get('/products', async (req, res) => {
+app.get('/message', async (req, res) => {
   try {
-      const products = await Product.find();
-      res.json(products);
+      const messages = await message.find();
+      res.json(messages);
   } catch(err) {
-      res.status(700).json({ message: err.message });
+      res.status(500).json({ message: err.message });
   }
 });
 
-// รัน server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
