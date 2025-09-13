@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 // const fs = require('fs');
 // const path = require('path');
 // const messageFile = path.join(__dirname, 'messages.json');
+dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
@@ -11,18 +12,13 @@ app.use(express.static("public"));
 app.get('/', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'public', 'index.html'));
 });
-
 app.get('/messages', (req, res) => {
   res.sendFile(path.join(process.cwd(), 'public', 'messages.html'));
 });
 
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => {
-  console.log('MongoDB Ready!!');
-})
-.catch((err) => {
-  console.error('MongoDB Error', err);
-});
+  .then(() => console.log("MongoDB Ready!!"))
+  .catch((err) => console.error("MongoDB Error", err));
 
 const messageSchema = new mongoose.Schema({
   message: {
