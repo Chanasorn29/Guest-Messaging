@@ -37,8 +37,12 @@ app.post('/message', async (req, res) => {
       res.status(201).json(savedMessage);
       
   } catch(err) {
-      res.status(100).json({ message: err.message });
+      res.status(400).json({ message: err.message });
   }
+});
+
+app.get('/messages', (req, res) => {
+  res.sendFile(__dirname + '/public/messages.html');
 });
 
 app.get('/message', async (req, res) => {
