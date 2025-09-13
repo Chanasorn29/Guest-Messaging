@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 // const fs = require('fs');
 // const path = require('path');
 // const messageFile = path.join(__dirname, 'messages.json');
-dotenv.config();
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
