@@ -41,8 +41,8 @@ app.post('/message', async (req, res) => {
   }
 });
 
-app.get('/messages', (req, res) => {
-  res.sendFile(__dirname + '/public/messages.html');
+app.get('/messages.html', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'public', 'messages.html'));
 });
 
 app.get('/message', async (req, res) => {
