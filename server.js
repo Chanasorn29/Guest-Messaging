@@ -35,6 +35,7 @@ app.post('/message', async (req, res) => {
       const newMessage = new message(req.body);
       const savedMessage = await newMessage.save();
       res.status(201).json(savedMessage);
+      
   } catch(err) {
       res.status(100).json({ message: err.message });
   }

@@ -107,7 +107,6 @@
     <button onclick="sendMessage()">ส่งข้อความ</button>
     <div class="response" id="responseText"></div>
   </div>
-
   <script>
     async function sendMessage() {
       const msg = document.getElementById('message').value.trim();
@@ -115,32 +114,24 @@
         alert('กรุณาพิมพ์ข้อความ!');
         return;
       }
-
       try {
-        const res = await fetch("http://localhost:3000/message", {
+        const res = await fetch("/message", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: msg })
         });
         const data = await res.json();
-        document.getElementById('response').innerText = data.status;
-      } catch (err) {
-        document.getElementById('response').innerText = "เกิดข้อผิดพลาด";
-      }
 
+        const responseElement = document.getElementById('responseText');
+        responseElement.className = 'response success';               
+        responseElement.innerText = "ส่งข้อความสำเร็จ ✅";       
+      } catch (err) {
+        const responseElement = document.getElementById('responseText');
+        responseElement.className = 'response error';
+        responseElement.innerText = "เกิดข้อผิดพลาด ❌";
+      }
       document.getElementById('message').value = "";
     }
-      // const result = await res.json();
-      // const responseElement = document.getElementById('responseText');
-      // if (result.status === "ข้อความสำเร็จ") {
-      //   responseElement.className = 'response success';
-      // } else {
-      //   responseElement.className = 'response error';
-      // }
-      // responseElement.innerText = result.status;
-
-      // document.getElementById('message').value = '';
-    
   </script>
 </body>
 </html>
